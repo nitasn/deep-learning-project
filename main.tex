@@ -48,12 +48,18 @@ Previous research, such as \href{https://arxiv.org/pdf/1711.05225.pdf}{CheXNet},
 \subsection{Solution}
 \subsubsection{The Task}
 In this task, we treat both bacterial and viral images as
-\textit{sick}, and train a model to binary-classify \textit{healthy}/\textit{sick} lungs.
+\textit{sick}, and train a model to classify \textit{healthy}/\textit{sick} lungs x-ray.
 
 \subsubsection{General approach}
-Using several convolution layers followed by a few dense layers is the industry go-to when it comes to image-classification, and that's what we chose. The limited dataset size (approximately 5K images) restricts the complexity of the network, as overly deep architectures risk significant overfitting. We try to combat over-fitting using several techniques.
+We use several convolution layers, followed by a few dense layers. It is the field's classic and go-to way to classify images. Furthermore, the limited dataset size (approximately 5K images) posses a serious restriction on the complexity of the network, as overly powerful architectures risk significant over-fitting.
 
 \subsubsection{Design}
+Our network's architecture mimics the great: we took inspiration from the VGG networks' architecture (but we didn't transfer weights; more on that later). 
+
+[TODO CHART WILL GO HERE]
+
+The final version of the notebook takes $\sim$30 minutes to run on Kaggle. 
+
 Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
 
 \subsection{Experimental results}
