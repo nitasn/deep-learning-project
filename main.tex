@@ -1,7 +1,6 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
-\usepackage{multicol}
 \setlength{\columnsep}{1cm}
 \usepackage[margin=0.5in]{geometry}
 
@@ -41,10 +40,8 @@ In this project, we demonstrate several different deep-learning techniques we le
 Previous research, such as \href{https://arxiv.org/pdf/1711.05225.pdf}{CheXNet}, study by Rajpurkar et al. (2017), has shown the advantage of using CNN in medical diagnostics. The model proposed in the paper used CNN to output probability of pneumonia with a heat-map localizing the pneumonia areas from chest X-ray images.
 
 \
-\begin{multicols}{2}
-[
-\section{\centering Task 1.a: Binary Classification}
-]
+\section{Task 1.a: Binary Classification}
+
 \subsection{Solution}
 \subsubsection{The Task}
 In this task, we treat both bacterial and viral images as
@@ -54,142 +51,132 @@ In this task, we treat both bacterial and viral images as
 We use several convolution layers, followed by a few dense layers. It is the field's classic and go-to way to classify images. Furthermore, the limited dataset size (approximately 5K images) posses a serious restriction on the complexity of the network, as overly powerful architectures risk significant over-fitting.
 
 \subsubsection{Design}
-Our network's architecture mimics the great: we took inspiration from the VGG networks' architecture (but we didn't transfer weights; more on that later). 
 
-[TODO CHART WILL GO HERE]
+Our network's architecture mimics the great: we took inspiration from the architecture of the VGG networks family. We tailored their layer sizes to our needs after thorough experimentation, maximizing accuracy, while battling over-fitting. The final network structure is portrayed in Figure~\ref{fig:model_1}.
 
-The final version of the notebook takes $\sim$30 minutes to run on Kaggle. 
+\textbf{Platform:} we built the model as a Keras Sequential on a kaggle notebook. It ran for $\sim$30 minutes using a P100 GPU. 
 
-Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
+\textbf{Loss:} we used binary-crossentropy, as it's classic in the context of binary classification, and it worked for us. 
 
-\subsection{Experimental results}
-Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
+\textbf{Optimizer:} we used Adam with initial learning rate of 1e-4, but also installed a callback to further lower it on plateau.
 
-\subsection{Discussion}
-Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
+\textbf{The Splits}: The train and the 16-images given val were concatenated and re-split into 80\% train and 20\% validation.
 
-Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
+\textbf{Limited dataset size:} as said, we only had a few thousand images to train on.
+To combat it, we used many augmentation methods to compensate for the lack of data. We also limited the number of epochs.
 
-\subsection{Code}
-
-Please provide a link to your colab notebook.
-
-\end{multicols}
-
-\
-\begin{multicols}{2}
-[
-\section{\centering Task 1.2: Multiclass Classification}
-]
-\subsection{Solution}
-\subsubsection{General approach}
-Describe your preferred approach to solve the problem. what alternatives you plan to try and why. 
-
-\subsubsection{Design}
-Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
-
-\subsection{Experimental results}
-Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
-
-\subsection{Discussion}
-Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
-
-Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
-
-\subsection{Code}
-
-Please provide a link to your colab notebook.
-
-\end{multicols}
-
-
-\
-\begin{multicols}{2}
-[
-\section{\centering Task 2: Model Embeddings and Visualization}
-]
-\subsection{Solution}
-\subsubsection{General approach}
-Describe your preferred approach to solve the problem. what alternatives you plan to try and why. 
-
-\subsubsection{Design}
-Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
-
-\subsection{Experimental results}
-Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
-
-\subsection{Discussion}
-Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
-
-Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
-
-\subsection{Code}
-
-Please provide a link to your colab notebook.
-
-\end{multicols}
-
-
-\
-\begin{multicols}{2}
-[
-\section{\centering Task 3: Anomaly Detection}
-]
-\subsection{Solution}
-\subsubsection{General approach}
-Describe your preferred approach to solve the problem. what alternatives you plan to try and why. 
-
-\subsubsection{Design}
-Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
-
-\subsection{Experimental results}
-Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
-
-\subsection{Discussion}
-Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
-
-Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
-
-\subsection{Code}
-
-Please provide a link to your colab notebook.
-
-\end{multicols}
-
-
-\
-\begin{multicols}{2}
-[
-\section{\centering Task 4: Explainability in Deep Learning}
-]
-\subsection{Solution}
-\subsubsection{General approach}
-Describe your preferred approach to solve the problem. what alternatives you plan to try and why. 
-
-\subsubsection{Design}
-Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
-
-\subsection{Experimental results}
-Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
-
-\subsection{Discussion}
-Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
-
-Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
-
-\subsection{Code}
-
-Please provide a link to your colab notebook.
-
-\end{multicols}
+\textbf{Class imbalance:} the sets had different distributions of labels.
+We removed excess data from the train/val sets until each class appeared 50\%; we found that to be more effective than assigning weights. The test-set, having a 62.5\% class imbalance, was left as is.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.45\linewidth]{model_1.png}
+  \includegraphics[width=0.45\linewidth, angle=90]{model_1.png}
   \caption{Binary Classification Model}
   \label{fig:model_1}
 \end{figure}
 
+\subsection{Experimental results}
+Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
+
+\subsection{Discussion}
+Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
+
+Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
+
+\subsection{Code}
+
+Please provide a link to your colab notebook.
+
+\
+\section{Task 1.2: Multiclass Classification}
+
+\subsection{Solution}
+\subsubsection{General approach}
+Describe your preferred approach to solve the problem. what alternatives you plan to try and why. 
+
+\subsubsection{Design}
+Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
+
+\subsection{Experimental results}
+Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
+
+\subsection{Discussion}
+Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
+
+Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
+
+\subsection{Code}
+
+Please provide a link to your colab notebook.
+
+
+\
+\section{Task 2: Model Embeddings and Visualization}
+
+\subsection{Solution}
+\subsubsection{General approach}
+Describe your preferred approach to solve the problem. what alternatives you plan to try and why. 
+
+\subsubsection{Design}
+Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
+
+\subsection{Experimental results}
+Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
+
+\subsection{Discussion}
+Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
+
+Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
+
+\subsection{Code}
+
+Please provide a link to your colab notebook.
+
+
+\
+\section{Task 3: Anomaly Detection}
+
+\subsection{Solution}
+\subsubsection{General approach}
+Describe your preferred approach to solve the problem. what alternatives you plan to try and why. 
+
+\subsubsection{Design}
+Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
+
+\subsection{Experimental results}
+Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
+
+\subsection{Discussion}
+Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
+
+Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
+
+\subsection{Code}
+
+Please provide a link to your colab notebook.
+
+
+\
+\section{Task 4: Explainability in Deep Learning}
+
+\subsection{Solution}
+\subsubsection{General approach}
+Describe your preferred approach to solve the problem. what alternatives you plan to try and why. 
+
+\subsubsection{Design}
+Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
+
+\subsection{Experimental results}
+Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
+
+\subsection{Discussion}
+Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
+
+Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
+
+\subsection{Code}
+
+Please provide a link to your colab notebook.
 
 Good luck!!
 \bibliographystyle{plain}
