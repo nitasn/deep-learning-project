@@ -83,7 +83,9 @@ We tweaked many aspects of our code during its journey to its final best form.
 When we matched the \textit{distribution of labels} in the train/val sets to 62.5\% (which is the distribution of labels in the test-set), the network achieved a final accuracy score of $\sim$96\% (measured on the test-set). Not altering the \textit{distribution of labels} in the train/val was (as expected) the worst - it limited the final accuracy to about $\sim$80\%. We decided (after e-mailing the course's TA) that "peeking" at the distribution of classes in the test-set was cheating, so we had two options: removing excess train/val data until the distribution was 50\%, or using different weights for each class in the loss function.
 We tried both things, and achieved similar results, but the trimming of data into 50\% representation has yielded results a tad superior, giving us a final accuracy score of $\sim$92\% over the test-set.
 
-\textbf{Learning rate:} we tried other values other than 1e-4, and were surprised to find out they hurt the final network's test-accuracy to a significant degree. Even starting with 1e-4, and then lowering it on plateau to 1e-6, has led to immense over-fitting, causing the final accuracy score to drop below 85\%.
+\textbf{Optimizer:} we shortly plugged in other optimizer algorithms, and found they brought no improvement over Adam, or (like in the case of Adamax), resulted in inferior final test accuracy.
+
+\textbf{Learning rate:} we tried other values other than 1e-4, and were surprised to find out they hurt the final network's test-accuracy to a significant degree. Even starting with 1e-4, and then lowering it on plateau to 1e-6, has led to immense over-fitting, causing the final accuracy score to drop to around 80\%.
 
 \textbf{Weight transferring:} we tried copying the actual weights from the early layers of VGG16 (whose structure we adopted and tweaked), but it provided no help to the model final accuracy. We suspect it might happened due to our needs being specific to intricate blobs in the lungs, while VGG is more general form, and was designed to classify more general shapes; hence transferring its early weights would probably help detecting that the image \textit{is} lungs, but not further. Also, VGG was trained on RGB images, while our x-ray images are grayscale; using VGG might just lead to the model seeking information in the wrong places.
 
@@ -96,7 +98,7 @@ We also stretched the size of the network (being its depth, the number of channe
 
 \textbf{"Hyper-Convergence":} it was difficult to draw rigorous scientific conclusions about the optimal network structure, as every experiment took half an our to run, and random luck carried an important ±5\% role in determining the network's final accuracy. Of course, repeating each experiment many times in parallel would allow us to reduce the variance, but our compute resources were limited.
 
-In Figure~\ref{fig:model_1_history}, you can see the Loss fluctuating, dipping almost randomly at its lowest point at epoch 43. Indeed, different runs yielded different minimum points (meaning different final test accuracy). 
+In Figure~\ref{fig:model_1_history}, you can see the Loss fluctuating, dipping almost randomly at its lowest point on epoch 43. Indeed, different runs yielded different minimum points (meaning different final test accuracy). 
 
 Our goal was maximizing test-accuracy, even at the cost of val-loss fluctuation in training, and even at the cost of having to run the notebook a few times and pick the best performing version. Overall, this way we were able to reach the highest test-accuracy of $\sim$92\% (again, this is without matching the labels distribution to the test. allowing it would make our model's score peak at $\sim$96\% test-accuracy).
 
@@ -113,7 +115,7 @@ To summarizing the above points, we found that data is indeed key; a limited num
 
 \subsection{Code}
 
-Please provide a link to your colab notebook.
+View the \href{https://www.kaggle.com/code/nitsanbh/lungs-x-ray}{notebook online}. There we're creating the binary classification model, training it, and assessing its performance. You'll also see answers to later questions on the same model, such as KNN in embedding-space, t-SNE, explainability, etc.
 
 \
 \section{Task 1.2: Multiclass Classification}
