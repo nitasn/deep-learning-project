@@ -11,6 +11,7 @@
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage[normalem]{ulem} % Import ulem and preserve \emph for italics
 
 \begin{document}
 
@@ -167,14 +168,60 @@ Please provide a link to your colab notebook.
 \section{Task 3: Anomaly Detection}
 
 \subsection{Solution}
+
+\subsubsection{The Problem}
+\textit{In this task, you only have data for "healthy" images. Try to identify "sick" individuals using Anomaly Detection methods.}
+
+This task is the most challenging. For once, the area the lungs occupy is only $\sim$20\% of each image's pixels, yet in it lies most (if not all) of the relevant data; The need to direct to model to focus on some moving $\sim$20\% area (the lungs) is clear. In addition, the size of the train-set this time was even more limited than in previous tasks, being only 1,079 "normal" images (after 20\% cut for validation).
+
 \subsubsection{General approach}
-Describe your preferred approach to solve the problem. what alternatives you plan to try and why. 
+We use an existing lungs-segmentation model to \textbf{concatenate a lungs-only image} next to each original image, and feed the resulting \textit{224 x 448} image as an input to our anomaly detection model. This helps our model focus on the lungs, while still seeing the "complete picture", which is more regular and predictable than just a blob of lungs floating in an all-black sea.
+
+Our anomaly detection model is an \textbf{auto-encoder with a wide "bottle-neck"}. The "encoder" \uline{expends the dimensionality of the image, in an attempt to capture more patterns in it, rather than losing them in compression}.
+
+The "encoder" (which more appropriately could be named "feature-expender") mostly consists of the early layers of VGG16 (with frozen weights); we only append one trainable convolution layer.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\linewidth]{concatenated-lungs-segmentation.png}
+  \caption{Pre-processed Image for Anomaly Detection Model}
+  \label{fig:concatenated-lungs-segmentation}
+\end{figure}
 
 \subsubsection{Design}
-Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
 
+\textbf{Concatenating each Image alongside Lungs-Only Image:} after asking the TA for permission, we used a \href{https://www.kaggle.com/datasets/farhanhaikhan/unet-lung-segmentation-weights-for-chest-x-rays/data}{pre-trained lungs-segmentation U-Net}, to create a lungs-only version of each image in the dataset; we then concatenated the lungs-only version to the right of each original image.
+
+\textbf{Wide Bottle-Neck "Auto-Encoder":} our "encoder" outputs tensors of shape \textit{112 x 224 x 32}; It's 8 times more dimensions than the input image, a mere \textit{224 x 448 x 1}. This makes our model "describe" an image with more details, rather than trying to compress it like a traditional auto-encoder.
+
+\textbf{Custom Loss:} we compute SSIM on each half individually, then sum the results with weights. The reconstruction of lungs half is multiplied by \textit{0.75}, and the reconstruction of the original half is multiplied by \textit{0.25}.
+
+\textbf{Augmentation:} apart from the lungs-segment concatenation, our pre-processing is minimal. It consists of slight variation in brightness and contrast, which we only apply to the original half.
+
+\textbf{Anomaly Definition:} we compute the \textit{mean} ($\mu$) and \textit{standard deviation} ($\sigma$) of the validation loss. A test image is considered an anomaly if its reconstruction loss is NOT within $\mu\pm\sigma$.
+
+\newpage
 \subsection{Experimental results}
-Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
+
+\textbf{Lungs-Segment Concatenation:} 
+
+\begin{itemize}
+\item When we trained the model on the \uline{original images alone}, it treated the entire x-ray (including the chin, armpits, spine, heart, and so on) the same; it resulted in \uline{negligible loss difference} between test-normal and test-sick.
+\item When we trained the model on the \uline{lungs-segment images alone}, the pattern was too irregular; the model would always converge to the local minimum of constructing \uline{almost completely-black images}, no matter the loss we used (MSE, SSIM, cross-entropy, dice-loss).
+\item Our solution was to \uline{concatenate} each original image alongside its lungs-segmented image, creating a dataset of 2:1 rectangular images. Our custom loss function \uline{makes the model focus on the lungs, while still using the "complete picture", which is easier to reproduce}.
+\end{itemize}
+
+\textbf{Loss Function:} 
+
+\begin{quote}
+Using the \uline{same loss strategy} (a weighted sum of the loss of each half), we tried \uline{replacing SSIM with MSE}. We were surprised to find it completely broke the model: instead of the regular result, where the standard deviation of the loss is an order of magnitude less than its mean, we got the opposite: a \uline{huge standard deviation, ten times the mean}. This nullified the possibility to distinguish between "normal" and "sick" based on reconstruction loss.
+\end{quote}
+
+\textbf{Training Duration and Fine Tuning:}
+\begin{itemize}
+\item We tried training the model for 25 epochs, which is hundreds of epochs short of convergence (the first plateau would occur 150 epochs later). After training (which only took 5 minutes), we measured these results:
+
+\end{itemize}
 
 \subsection{Discussion}
 Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
