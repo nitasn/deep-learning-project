@@ -3,6 +3,7 @@
 \usepackage{hyperref}
 \setlength{\columnsep}{1cm}
 \usepackage[margin=0.5in]{geometry}
+\usepackage{amsmath}
 
 \title{Deep Learning Course - Final Project}
 \author{Nitsan BenHanoch (208585927), Nir Koren (316443902), Tsvi Tabach (311292304)}
@@ -92,22 +93,65 @@ Please provide a link to your colab notebook.
 
 \subsection{Solution}
 \subsubsection{General approach}
-Describe your preferred approach to solve the problem. what alternatives you plan to try and why. 
+For the multiclass class classification task, We used the ResNet34 architecture with 3 sized classification head. Some alternatives such as Vision Transformer and Dense Net were tested, but the ResNet34 provided the most accuracy on the test set.
 
 \subsubsection{Design}
-Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
+The ResNet34 architecture we used was taken from the original paper \href{https://arxiv.org/pdf/1512.03385.pdf}{Deep Residual Learning for Image Recognition} by Kaiming He. The architecture includes 34 convolution layers and residual connections between each block. The model is divided into two main components: ResNet34 backbone and 3-sized classification head. A single modification was made to the original ResNet34 architecture: the activation functions were switched from ReLU to GELU to enhance performance.
+
+\textbf{Platform:} We built the model as a Pytorch class on a kaggle notebook. It ran for 20 epochs and took $\sim$9 minutes using a P100 GPU. 
+
+\textbf{Loss:} We used cross-entropy loss, a go-to loss function for classification tasks.
+
+\textbf{Optimizer:} We used AdamW with an initial learning = 1e-3, weight decay = 0.005
+
+\textbf{Scheduler:} We used a Warmup Cosine Schedule with 5 warmup steps
+
+\textbf{The Splits}: For a more representative validation set we moved 400 samples from the training dataset to the validation dataset. At last we had 4816 training samples, 416 validation samples and 624 test samples.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.15\linewidth, angle=90]{resnet.png}
+  \caption{ResNet34 architecture from the original paper}
+  \label{fig:resnet}
+\end{figure}
 
 \subsection{Experimental results}
-Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
+The ResNet34 model underwent 20 epochs of training, showcasing a gradual improvement in both training and validation accuracies. Initial epochs demonstrated a significant loss decrease and accuracy improvement, stabilizing as the epochs progressed. The final recorded training accuracy was 81.89%, with a loss of 0.4253, whereas the validation accuracy peaked at approximately 79.33% with a similar loss range. The model weights were saved every time the validation accuracy was peaked.
+
+The test performance was independently evaluated using the model weights that achieved the best validation accuracy. This assessment resulted in a test accuracy of 83.28% and a loss of 0.5847, demonstrating robust generalization.
+
+\subsubsection{Comparison to Alternatives}
+Several alternative architectures were evaluated, including Vision Transformer, DenseNet, and fine-tuning of pretrained models. Ultimately, the non-pretrained ResNet34 model was selected as it surpassed all other options in performance. Our primary hypothesis for its superior performance is that the residual connections within the ResNet34 help mitigate the vanishing/exploding gradient problem, thus enabling the construction of a deeper network that excels in classification tasks. Additionally, the pretrained models were initially trained on datasets significantly different from ours, such as ImageNet. This discrepancy likely contributed to the poorer performance observed when fine-tuning these models compared to using a freshly initialized network.
+
+\subsubsection{Visualizations}
+Training and validation loss and accuracy over epochs were plotted, with the final test loss and accuracy ~\ref{fig:resnet_training_trends}.
+Additionally, a confusion matrix on the test set was plotted to visually assess the relationships and misclassifications between classes.
+
+\[
+\begin{array}{c|cccc}
+\text{True/Predicted} & \text{Normal} & \text{Bacteria} & \text{Virus} \\
+\hline
+\text{Normal} & 189 & 17 & 28 \\
+\text{Bacteria} & 9 & 231 & 2 \\
+\text{Virus} & 14 & 33 & 101 \\
+\end{array}
+\]
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\linewidth, angle=0]{resnet_training_trends.png}
+  \caption{ResNet34 training trends}
+  \label{fig:resnet_training_trends}
+\end{figure}
 
 \subsection{Discussion}
-Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
-
-Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
+Our exploration validated the non-pretrained ResNet34 as the optimal choice for multiclass classification on the chest-xray-pneumonia dataset. Moreover, selecting the right optimizer and learning rate decay schedule is crucial for optimal performance. Further research into hyperparameter optimization could significantly enhance results.
 
 \subsection{Code}
 
-Please provide a link to your colab notebook.
+\href{https://colab.research.google.com/drive/1FQ7bfbL8da7DRQiRvmgwdZXTTDB8sq8w}{Testing Notebook}
+\href{https://colab.research.google.com/drive/157ERSNs66ypq-Svs68ftGqOEB_q_hAXD#scrollTo=ORtu8MojEoMq}{Training Notebook}
 
 
 \
