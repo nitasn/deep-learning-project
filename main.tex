@@ -204,7 +204,6 @@ The "encoder" (which more appropriately could be named "feature-expender") mostl
 \subsection{Experimental results}
 
 \textbf{Lungs-Segment Concatenation:} 
-
 \begin{itemize}
 \item When we trained the model on the \uline{original images alone}, it treated the entire x-ray (including the chin, armpits, spine, heart, and so on) the same; it resulted in \uline{negligible loss difference} between test-normal and test-sick.
 \item When we trained the model on the \uline{lungs-segment images alone}, the pattern was too irregular; the model would always converge to the local minimum of constructing \uline{almost completely-black images}, no matter the loss we used (MSE, SSIM, cross-entropy, dice-loss).
@@ -212,16 +211,45 @@ The "encoder" (which more appropriately could be named "feature-expender") mostl
 \end{itemize}
 
 \textbf{Loss Function:} 
-
 \begin{quote}
 Using the \uline{same loss strategy} (a weighted sum of the loss of each half), we tried \uline{replacing SSIM with MSE}. We were surprised to find it completely broke the model: instead of the regular result, where the standard deviation of the loss is an order of magnitude less than its mean, we got the opposite: a \uline{huge standard deviation, ten times the mean}. This nullified the possibility to distinguish between "normal" and "sick" based on reconstruction loss.
 \end{quote}
 
-\textbf{Training Duration and Fine Tuning:}
-\begin{itemize}
-\item We tried training the model for 25 epochs, which is hundreds of epochs short of convergence (the first plateau would occur 150 epochs later). After training (which only took 5 minutes), we measured these results:
+\textbf{"Bottle-Neck" Shape:} 
+\begin{quote}
+In its final version, our model looks like a diamond, rather than a traditional auto-encoder's bow-tie. When we tried using an actual "bottle-neck" - being a vector of size 256 to 2048, the model's reconstructed images looked very blurred. Even in the best blurred version, the lungs were a monochromatic area; the model captured their contours, but missed 100\% of the details inside them.
+\end{quote}
 
-\end{itemize}
+\textbf{Training Duration and Fine Tuning:}
+\begin{quote}
+When we transferred the first layers of VGG16, we froze its weights. We then let the model [TODO]
+\end{quote}
+
+
+\textbf{Measuring Improvement During Training:}
+\begin{quote}
+We relied on validation [TODO]
+\end{quote}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\linewidth]{confusion_by_epoch.png}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\linewidth]{losses_mean_std_by_epoch.png}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\linewidth]{train_val_loss_by_epoch.png}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\linewidth]{scores_by_epoch.png}
+\end{figure}
 
 \subsection{Discussion}
 Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
