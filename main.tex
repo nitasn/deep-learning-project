@@ -158,21 +158,30 @@ Our exploration validated the non-pretrained ResNet34 as the optimal choice for 
 
 \
 \section{Task 2: Model Embeddings and Visualization}
+\subsection{Task 1.b}
+\subsubsection{Embedding and KNN classification}
+In Task 1.b, we employed a ResNet34 model for multiclass classification purposes. This architecture generates embeddings as 1000-dimensional vectors, which are subsequently inputted into a final linear layer with dimensions 1000x3 for classification. Leveraging these embeddings, we trained a K-Nearest Neighbors (KNN) classifier using the same training dataset as in Task 1.b. We configured the KNN model to utilize 7 neighbors, which achieved an accuracy of 70.03\% on the test set. Additionally, a confusion matrix on the test set was plotted to visually assess the relationships and misclassifications between classes using KNN classifier.
 
-\subsection{Solution}
-\subsubsection{General approach}
-Describe your preferred approach to solve the problem. what alternatives you plan to try and why. 
 
-\subsubsection{Design}
-Provide some general information about your code, platform, how long it took you to train it, technical challenges you had, Loss functions, Optimizers, Architecture, and more.
+\[
+\begin{array}{c|cccc}
+\text{True/Predicted} & \text{Normal} & \text{Bacteria} & \text{Virus} \\
+\hline
+\text{Normal} & 97 & 55 & 82 \\
+\text{Bacteria} & 3 & 226 & 13 \\
+\text{Virus} & 1 & 33 & 114 \\
+\end{array}
+\]
 
-\subsection{Experimental results}
-Provide information about your experimental settings. What alternatives did you measure? Make sure this part is clear to understand, provide as much details as possible. Provide results with tables and figures.
+\subsubsection{Classes Visualization}
+To visualize how the trained network perceives the classes within the dataset, we extracted the embeddings produced by the ResNet34 backbone. These embeddings were then visualized using the t-SNE technique, facilitated by the t-SNE library, to represent the high-dimensional vector space in a two-dimensional plot. As illustrated in Figure \ref{fig:t_sne_1b}, the plot reveals a distinct separation between the Normal and non-Normal classes. Additionally, there is a moderate but discernible linear separation between the Virus and Bacteria classes.
 
-\subsection{Discussion}
-Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
-
-Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
+\begin{figure}
+  \centering
+  \includegraphics[width=0.55\linewidth, angle=0]{t_sne_1b.png}
+  \caption{T-sne visualization of the classes}
+  \label{fig:t_sne_1b}
+\end{figure}
 
 \subsection{Code}
 
