@@ -118,12 +118,16 @@ The ResNet34 architecture we used was taken from the original paper \href{https:
 \end{figure}
 
 \subsection{Experimental results}
-The ResNet34 model underwent 20 epochs of training, showcasing a gradual improvement in both training and validation accuracies. Initial epochs demonstrated a significant loss decrease and accuracy improvement, stabilizing as the epochs progressed. The final recorded training accuracy was 81.89%, with a loss of 0.4253, whereas the validation accuracy peaked at approximately 79.33% with a similar loss range. The model weights were saved every time the validation accuracy was peaked.
+The ResNet34 model underwent 20 epochs of training, showcasing a gradual improvement in both training and validation accuracies. Initial epochs demonstrated a significant loss decrease and accuracy improvement, stabilizing as the epochs progressed. The final recorded training accuracy was 81.89\%, with a loss of 0.4253, whereas the validation accuracy peaked at approximately 79.33\% with a similar loss range. The model weights were saved every time the validation accuracy peaked.
 
-The test performance was independently evaluated using the model weights that achieved the best validation accuracy. This assessment resulted in a test accuracy of 83.28% and a loss of 0.5847, demonstrating robust generalization.
+The test performance was independently evaluated using the model weights that achieved the best validation accuracy. This assessment resulted in a test accuracy of 83.28\% and a loss of 0.5847, demonstrating robust generalization.
 
 \subsubsection{Comparison to Alternatives}
 Several alternative architectures were evaluated, including Vision Transformer, DenseNet, and fine-tuning of pretrained models. Ultimately, the non-pretrained ResNet34 model was selected as it surpassed all other options in performance. Our primary hypothesis for its superior performance is that the residual connections within the ResNet34 help mitigate the vanishing/exploding gradient problem, thus enabling the construction of a deeper network that excels in classification tasks. Additionally, the pretrained models were initially trained on datasets significantly different from ours, such as ImageNet. This discrepancy likely contributed to the poorer performance observed when fine-tuning these models compared to using a freshly initialized network.
+
+We implemented data augmentation techniques as a strategy to prevent overfitting. However, our experimental results did not show an improvement in test accuracy from these augmentations. 
+
+Furthermore, we experimented with using the Stochastic Gradient Descent (SGD), and regular Adam optimizers, but this approach resulted in reduced accuracies compared to our baseline AdamW optimizer.
 
 \subsubsection{Visualizations}
 Training and validation loss and accuracy over epochs were plotted, with the final test loss and accuracy ~\ref{fig:resnet_training_trends}.
@@ -237,14 +241,14 @@ This approach involves selecting a single image from the dataset and a specific 
 
 \begin{figure}
      \centering
-     \begin{subfigure}[b]{0.25\textwidth}
+     \begin{subfigure}[b]{0.45\textwidth}
          \centering
          \includegraphics[width=1.0\linewidth, angle=0]{receptive_fields.png}
           \caption{Receptive fields of max activation. (N=Normal, P=Pneumonia)}
           \label{fig:receptive_fields}
      \end{subfigure}
      \hfill
-     \begin{subfigure}[b]{0.25\textwidth}
+     \begin{subfigure}[b]{0.45\textwidth}
          \centering
          \includegraphics[width=1.1\linewidth, angle=0]{synth_images.png}
           \caption{Synthesizing inputs that cause high activation}
