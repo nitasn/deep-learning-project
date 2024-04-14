@@ -17,10 +17,20 @@ The training Notebook solves the 1.a, 2 (for the 1.a part) and 4 assiment
 The training Notebook solves the 1.b, 2 (for the 1.b part)
 
 ### Running instructions
-The training notebook was initially developed on Kaggle.com and later imported to Colab. The outputs from previous sessions are preserved within the notebook. To rerun the training process, we recommend downloading the notebook and uploading it to Kaggle's platform, then executing all cells using the "Run All" feature.
+The training notebook was initially developed on Kaggle.com and later imported to Colab. The outputs from previous sessions are preserved within the notebook. To rerun the training process, we recommend:
+- downloading the notebook
+- uploading it to Kaggle's platform
+- then execute all cells using the "Run All" feature.
 <br>
 <br>
-For the testing notebook, execute all cells as they are set up to automatically load the model, download the weights, and retrieve example images from a public directory on our drive. The final cell in the notebook provides an option to classify your own image. To use this feature, upload an image to the Colab environment and input the image's path when prompted.
+For the testing notebook:
+
+- Execute all cells as they are set up to automatically load the model, download the weights, and retrieve example images from a public directory on our drive.
+
+The final cell in the notebook provides an option to classify your own image. To use this feature:
+
+- Upload an image to the Colab environment.
+- Input the image's path when prompted.
 
 ## Third Notebook
 [Training notebook link]()
