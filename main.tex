@@ -269,6 +269,11 @@ The "encoder" (which more appropriately could be named "feature-expender") mostl
 \item Our solution was to \uline{concatenate} each original image alongside its lungs-segmented image, creating a dataset of 2:1 rectangular images. Our custom loss function \uline{makes the model focus on the lungs, while still using the "complete picture", which is easier to reproduce}.
 \end{itemize}
 
+\textbf{U-Net Alternative:}
+\begin{quote}
+As an alternative architectural approach, we experimented with a U-Net model enhanced with skip connections. This variant demonstrated effective reconstruction capabilities for the input images. However, its performance in predicting non-normal images was lower, yielding significantly low accuracy in these cases.
+\end{quote}
+
 \textbf{Loss Function:} 
 \begin{quote}
 Using the \uline{same loss strategy} (a weighted sum of the loss of each half), we tried \uline{replacing SSIM with MSE}. We were surprised to find it completely broke the model: instead of the regular result, where the standard deviation of the loss is an order of magnitude less than its mean, we got the opposite: a \uline{huge standard deviation, ten times the mean}. This nullified the possibility to distinguish between "normal" and "sick" based on reconstruction loss.
