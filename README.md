@@ -22,7 +22,6 @@ The training notebook was initially developed on Kaggle.com and later imported t
 - uploading it to Kaggle's platform
 - then execute all cells using the "Run All" feature.
 <br>
-<br>
 For the testing notebook:
 
 - Execute all cells as they are set up to automatically load the model, download the weights, and retrieve example images from a public directory on our drive.
