@@ -187,16 +187,36 @@ Our exploration validated the non-pretrained ResNet34 as the optimal choice for 
 
 \subsection{Code}
 
-\href{https://colab.research.google.com/drive/1FQ7bfbL8da7DRQiRvmgwdZXTTDB8sq8w}{Testing Notebook}
-\href{https://colab.research.google.com/drive/1Tn58ilSmOiaNIyFNw5BHlqye3YQIMplX#scrollTo=fSeq-k2n1jHI}{Training Notebook}
+See our \href{https://colab.research.google.com/drive/1Tn58ilSmOiaNIyFNw5BHlqye3YQIMplX#scrollTo=fSeq-k2n1jHI}{Training Notebook} on Google Collab.
 
 
 \
 \section{Task 2: Model Embeddings and Visualization}
+
+\subsection{Task 1.a}
+\subsubsection{Embedding and KNN classification}
+We began with the end in mind, and built the Binary Classification model as a sequence of two sub-models: an embedding model, and short fully connected model to get from embedding to a single probability number; see Figure \ref{fig:model_1}.
+
+To find the optimal number of KNN neighbors, we built a KNN model on train-embeddings, ran through all $k$ from 1 to 200, and found that $k = 7$ maximizes val-embeddings decision accuracy. Although $k = 7$ gave 97.2\% accuracy on val-embeddings, this $k$ only gave 87.5\% accuracy on test-embeddings.
+
+\[
+\begin{array}{c|cccc}
+\text{True/Predicted} & \text{Normal} & \text{Pneumonia} \\
+\hline
+\text{Normal} & 193 & 41 \\
+\text{Pneumonia} & 12 & 378 \\
+\end{array}
+\]
+
+\subsection{Code}
+
+As this is a continuation of the previous task, you can find the KNN part in \href{https://www.kaggle.com/code/nitsanbh/lungs-x-ray#Question-2}{this notebook}.
+
+
 \subsection{Task 1.b}
+
 \subsubsection{Embedding and KNN classification}
 In Task 1.b, we employed a ResNet34 model for multiclass classification purposes. This architecture generates embeddings as 1000-dimensional vectors, which are subsequently inputted into a final linear layer with dimensions 1000x3 for classification. Leveraging these embeddings, we trained a K-Nearest Neighbors (KNN) classifier using the same training dataset as in Task 1.b. We configured the KNN model to utilize 7 neighbors, which achieved an accuracy of 70.03\% on the test set. Additionally, a confusion matrix on the test set was plotted to visually assess the relationships and misclassifications between classes using KNN classifier.
-
 
 \[
 \begin{array}{c|cccc}
@@ -211,17 +231,25 @@ In Task 1.b, we employed a ResNet34 model for multiclass classification purposes
 \subsubsection{Classes Visualization}
 To visualize how the trained network perceives the classes within the dataset, we extracted the embeddings produced by the ResNet34 backbone. These embeddings were then visualized using the t-SNE technique, facilitated by the t-SNE library, to represent the high-dimensional vector space in a two-dimensional plot. As illustrated in Figure \ref{fig:t_sne_1b}, the plot reveals a distinct separation between the Normal and non-Normal classes. Additionally, there is a moderate but discernible linear separation between the Virus and Bacteria classes.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=0.55\linewidth, angle=0]{t_sne_1b.png}
-  \caption{T-sne visualization of the classes}
-  \label{fig:t_sne_1b}
-\end{figure}
-
 \subsection{Code}
 
-Please provide a link to your colab notebook.
+As this is a continuation of the previous task, you can find the KNN part at the end of \href{https://colab.research.google.com/drive/1Tn58ilSmOiaNIyFNw5BHlqye3YQIMplX#scrollTo=WdLwzqsl1jHO}{that notebook}.
 
+
+\begin{figure}[ht]
+  \centering
+  \begin{minipage}{0.35\linewidth}
+    \includegraphics[width=\linewidth]{binary_tsne.png}
+    \caption{Binary Model: embeddings t-sne visualization}
+    \label{fig:binary_tsne}
+  \end{minipage}
+  % \hfill % Adds horizontal space between the two figures
+  \begin{minipage}{0.55\linewidth}
+    \includegraphics[width=\linewidth]{t_sne_1b.png}
+    \caption{Multiclass Model: embeddings t-sne visualization}
+    \label{fig:t_sne_1b}
+  \end{minipage}
+\end{figure}
 
 \
 \section{Task 3: Anomaly Detection}
@@ -240,16 +268,9 @@ Our anomaly detection model is an \textbf{auto-encoder with a wide "bottle-neck"
 
 The "encoder" (which more appropriately could be named "feature-expender") mostly consists of the early layers of VGG16 (with frozen weights); we only append one trainable convolution layer.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.8\linewidth]{concatenated-lungs-segmentation.png}
-  \caption{Pre-processed Image for Anomaly Detection Model}
-  \label{fig:concatenated-lungs-segmentation}
-\end{figure}
-
 \subsubsection{Design}
 
-\textbf{Concatenating each Image alongside Lungs-Only Image:} after asking the TA for permission, we used a \href{https://www.kaggle.com/datasets/farhanhaikhan/unet-lung-segmentation-weights-for-chest-x-rays/data}{pre-trained lungs-segmentation U-Net}, to create a lungs-only version of each image in the dataset; we then concatenated the lungs-only version to the right of each original image.
+\textbf{Concatenating each Image alongside Lungs-Only Image:} after asking the TA for permission, we used a \href{https://www.kaggle.com/datasets/farhanhaikhan/unet-lung-segmentation-weights-for-chest-x-rays/data}{pre-trained lungs-segmentation U-Net}, to create a lungs-only version of each image in the dataset; we then concatenated the lungs-only version to the right of each original image (see Figure \ref {fig:concatenated-lungs-segmentation}). The elongated images were our main model's input.
 
 \textbf{Wide Bottle-Neck "Auto-Encoder":} our "encoder" outputs tensors of shape \textit{112 x 224 x 32}; It's 8 times more dimensions than the input image, a mere \textit{224 x 448 x 1}. This makes our model "describe" an image with more details, rather than trying to compress it like a traditional auto-encoder.
 
@@ -259,7 +280,13 @@ The "encoder" (which more appropriately could be named "feature-expender") mostl
 
 \textbf{Anomaly Definition:} we compute the \textit{mean} ($\mu$) and \textit{standard deviation} ($\sigma$) of the validation loss. A test image is considered an anomaly if its reconstruction loss is NOT within $\mu\pm\sigma$.
 
-\newpage
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\linewidth]{concatenated-lungs-segmentation.png}
+  \caption{Example Input for Anomaly Detection Autoencoder}
+  \label{fig:concatenated-lungs-segmentation}
+\end{figure}
+
 \subsection{Experimental results}
 
 \textbf{Lungs-Segment Concatenation:} 
@@ -284,45 +311,74 @@ Using the \uline{same loss strategy} (a weighted sum of the loss of each half), 
 In its final version, our model looks like a diamond, rather than a traditional auto-encoder's bow-tie. When we tried using an actual "bottle-neck" - being a vector of size 256 to 2048, the model's reconstructed images looked very blurred. Even in the best blurred version, the lungs were a monochromatic area; the model captured their contours, but missed 100\% of the details inside them.
 \end{quote}
 
-\textbf{Training Duration and Fine Tuning:}
+\textbf{Network Depth:} 
 \begin{quote}
-When we transferred the first layers of VGG16, we froze its weights. We then let the model [TODO]
+Our final design is relatively shallow. We found deeper designs brought no benefit. In fact, when too deep, the network converged into the aweful local-minimum of generating completely black images.
+
+\begin{table}[h]
+  \centering
+  \caption{Anomaly Detection Model Architecture}
+  \label{tab:anomaly_model_architecture}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Layer (type)} & \textbf{Output Shape} & \textbf{Param \#} \\
+    \hline
+    grayscale\_to\_rgb (GrayscaleToRGB) & (1, 224, 448, 3) & 0 \\
+    \hline
+    vgg16\_block1\_conv1 (Conv2D) & (1, 224, 448, 64) & 1,792 \\
+    \hline
+    vgg16\_block1\_conv2 (Conv2D) & (1, 224, 448, 64) & 36,928 \\
+    \hline
+    vgg16\_block1\_pool (MaxPooling2D) & (1, 112, 224, 64) & 0 \\
+    \hline
+    bottle\_neck (Conv2D) & (1, 112, 224, 32) & 18,464 \\
+    \hline
+    up\_sampling (UpSampling2D) & (1, 224, 448, 32) & 0 \\
+    \hline
+    conv\_t1 (Conv2DTranspose) & (1, 224, 448, 64) & 18,496 \\
+    \hline
+    conv\_t2 (Conv2DTranspose) & (1, 224, 448, 64) & 36,928 \\
+    \hline
+    output (Conv2DTranspose) & (1, 224, 448, 1) & 577 \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\end{quote}
+
+\textbf{Fine Tuning:}
+\begin{quote}
+When we transferred the first layers of VGG16, we froze its weights. We then let the model train until convergence, and trained it again with VGG16's layers un-frozen. we found that fine-tuning them brought no improvement.
 \end{quote}
 
 
-\textbf{Measuring Improvement During Training:}
+\textbf{Finding Optimal Number of Epochs:}
 \begin{quote}
-We relied on validation [TODO]
+We measure (and log) the model's ability to distinguish betwen normal and pneumonia images, as training progresses. Since train and val only contain normal images, this measurement is performed over the test-set.
+However, these measures are not used to guide the training process in any way; we only use them after training's over, to draw analytics, and estimate the ideal number of epochs. The ideal number of epochs is not trivial, since even if val-loss is getting better and better, the real goal is to have as much of a difference between normal and abnormal images reconstruction. We found that generally, the model does get a larger reconstruction loss difference when as val-loss gets lower and lower, and hence it IS a tool to know when convergence is reached.
 \end{quote}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\linewidth]{confusion_by_epoch.png}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=1\linewidth]{losses_mean_std_by_epoch.png}
+  \caption{Anomaly Detection Model Confusion by Epoch. Right Column is Final Performance.}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\linewidth]{train_val_loss_by_epoch.png}
+  \caption{Notice $ValLossNormal \approx TestLossNormal \neq TestLossPneumonia$}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\linewidth]{scores_by_epoch.png}
+  \caption{Anomaly Detection Model: Scores by Epoch}
 \end{figure}
-
-\subsection{Discussion}
-Provide some final words and summarize what you have found from running the experiments you described above. Provide some high level insights.
-
-Note - your project will be evaluated for aspects, including the technique you selected, the rational of the experiments you decided to run, the insights you learned from this process and more. Remember, for the purpose of this course, the process that you demonstrate is very  important.
 
 \subsection{Code}
 
-Please provide a link to your colab notebook.
+You can see our code for the model, training, and cool performance analytics in \href{https://www.kaggle.com/code/nitsanbenhanoch/lungs-x-ray-anomaly-detection}{this notebook}.
 
 
 \
@@ -342,7 +398,7 @@ This method provides insights into the network's decision-making process. We sel
 This approach involves selecting a single image from the dataset and a specific layer within the network. We initiated 64 distinct "training" sessions, using the chosen image as the starting input with its pixels set as trainable parameters. For each session, a different filter from the selected layer was targeted, and gradient ascent was employed to maximize the filter's activation in response to the input. This method helps identify the visual patterns and features that each filter within the layer is most responsive to. As shown in Figure \ref{fig:synth_images}. Each session consisted of 1000 epochs, with a notably high learning rate of 10,000.0. Although this rate may seem unusually large, it was necessary to effect significant modifications to the input image.
 
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.95\linewidth, angle=0]{occlusion.png}
   \caption{Heatmaps by Occlusion}
@@ -372,9 +428,8 @@ This approach involves selecting a single image from the dataset and a specific 
 
 \subsection{Code}
 
-Please provide a link to your colab notebook.
+This task is a continuation of the first task, and therefore we continued the code in \href{https://www.kaggle.com/code/nitsanbh/lungs-x-ray}{the same notebook}.
 
-Good luck!!
 \bibliographystyle{plain}
 \bibliography{references}
 \end{document}
