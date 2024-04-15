@@ -35,7 +35,7 @@ The training notebook was initially developed on Kaggle.com and later imported t
 - downloading the notebook
 - uploading it to Kaggle's platform
 - then execute all cells using the "Run All" feature.
-<br>
+
 For the testing notebook:
 
 - Execute all cells as they are set up to automatically load the model, download the weights, and retrieve example images from a public directory on our drive.
@@ -51,6 +51,7 @@ Again, these notebooks are on Kaggle, for we just could not make them in in Coll
 We provided as clear of instructions as possible for how to play with our code on Kaggle.
 
 [Training notebook link](https://www.kaggle.com/code/nitsanbenhanoch/lungs-x-ray-anomaly-detection)
+
 [Testing notebook link](https://www.kaggle.com/code/nitsanbh/playground-lungs-x-ray-anomaly-detection)
 
 The training Notebook solves the 3 assiment
